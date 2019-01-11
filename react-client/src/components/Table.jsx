@@ -37,11 +37,11 @@ class Table extends React.Component {
 
   render () {
     return (
-      <div>
-        <table>
+      <div style={tableContainer}>
+        <table style={table}>
           <thead>
           <tr>
-            <th>Exercise</th>
+            <th style={border}> Exercise</th>
 
             {this.state.rowHeaders.map((header, idx) => (
             <Headers numOfHeaders={this.state.rowHeaders.length} idx={idx}/>
@@ -64,5 +64,29 @@ class Table extends React.Component {
 
 }
 
-
 export default Table;
+
+// TODO: fixed position for first column on scroll
+
+const tableContainer = {
+  overflowX: 'auto',
+  // width: '100%',
+  // margin: 'auto'
+}
+
+const table = {
+  fontFamily: 'Montserrat',
+  fontStyle: 'bold',
+  borderCollapse: 'collapse',
+  margin: 'auto'
+
+}
+
+const border = {  
+  borderBottom: '1px solid black',
+  padding: '8px',
+  position: 'sticky',
+  left: '0',
+  backgroundColor: 'white'
+
+}

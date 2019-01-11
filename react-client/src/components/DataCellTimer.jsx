@@ -62,14 +62,24 @@ class DataCellTimer extends React.Component {
 // console.log(parseMS(this.state.displayTime))
 
     return (
-      <td>
+      <td style={border}>
         {this.state.formattedTime}
         {/* {prettyMs(this.state.displayTime, {msDecimalDigits: 2})} */}
-        <button onClick={this.startTimer}>start</button>
-        <button onClick={this.stopTmer}>stop</button>
+        <div>
+          <button onClick={this.startTimer}>start</button>
+          <button onClick={this.stopTmer}>stop</button>
+        </div>
       </td>
     )
   }
 }
 
 export default DataCellTimer;
+
+const border = {
+  borderBottom: '1px solid black',
+  padding: '8px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden'
+
+}

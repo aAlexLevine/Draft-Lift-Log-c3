@@ -3,8 +3,8 @@ import Table from './Table.jsx';
 import axios from 'axios'
 
 class Menu extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       data: [],
       userID: 0,
@@ -41,39 +41,28 @@ class Menu extends React.Component {
  
   render() {
     return (
-      <div>
+      <div >
         <h1>Menu</h1>
-      
-          <div style ={selectBars}>
+      {/* todays date, your last workout (plan, group) */}
+
+          <div style={selectBarsContainer}>
             
-            <div>
-              <h3>Pick a plan</h3>
+            <div style={selectBar}>
+              <h3 style={selectTitles}>Pick your workout</h3>
               <select>
                 <option>
                 </option>
               </select>
             </div>
 
-            <div>
-              <h3>Pick a plan</h3>
+            <div style={selectBar}>
+              <h3 style={selectTitles}>Pick your plan</h3>
               <select>
-                <option>
+                <option>aaaaaaaaaaaaaa
                 </option>
               </select>
             </div>
 
-            <div>
-              <h3>Pick a plan</h3>
-              <select>
-                <option>
-                </option>
-              </select>
-            </div>
-
-            
-
-            
-      
           </div>   
 
         {/* multiple select drops down to pick plan from users plans  */}
@@ -84,6 +73,28 @@ class Menu extends React.Component {
 }
 export default Menu;
 
-const selectBars = {
-  display: 'flex'
+const selectBarsContainer = {
+  display: 'grid',
+  gridTemplateColumns: 'auto auto',
+  margin: 'auto',
+  width: '50%',
+  // textAlign: 'center'
+  // alignItems: 'center',
+  // justifyContent: 'center',
+  // height: '100%'
 }
+
+const selectBar = {
+  borderStyle: 'solid',
+  padding: '25px'
+}
+
+const selectTitles = {
+  textAlign: 'center',
+  fontFamily: 'Montserrat'
+}
+
+// const selectBarsContainer = {
+//   margin: 'auto',
+//   width: '100%'
+// }

@@ -29,9 +29,9 @@ class App extends React.Component {
   }
 
   render () {
-    return (<div>
+    return (<div style={mainWrapper}>
       <h1>Item List</h1>
-      <List items={this.state.items}/>
+      {/* <List items={this.state.items}/> */}
       <Menu />
       {/* <Table /> */}
     </div>)
@@ -39,3 +39,9 @@ class App extends React.Component {
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));
+
+const mainWrapper = {
+  marginLeft:'auto',
+  marginRight:'auto',
+  width:'960px'
+}

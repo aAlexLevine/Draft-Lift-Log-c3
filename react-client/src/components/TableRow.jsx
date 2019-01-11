@@ -20,7 +20,7 @@ class TableRow extends React.Component {
   render() {
     return (
       <tr>
-        <td>
+        <td style={border}>
           {this.props.exercise}
         </td>
         {this.props.rowHeaders.map((header, i) => (
@@ -37,3 +37,11 @@ class TableRow extends React.Component {
 }
 
 export default TableRow;
+
+const border = {  
+ borderBottom: '1px solid black',
+ padding: '8px',
+ position: 'sticky',
+ left: '0',
+ backgroundColor: 'white'
+}
