@@ -66,8 +66,6 @@ class Table extends React.Component {
 
 export default Table;
 
-// TODO: fixed position for first column on scroll
-
 const tableContainer = {
   overflowX: 'auto',
   // width: '100%',
@@ -76,7 +74,7 @@ const tableContainer = {
 
 const table = {
   fontFamily: 'Montserrat',
-  fontStyle: 'bold',
+  // fontStyle: 'bold',
   borderCollapse: 'collapse',
   margin: 'auto'
 

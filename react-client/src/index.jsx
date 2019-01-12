@@ -4,6 +4,7 @@ import $ from 'jquery';
 import List from './components/List.jsx';
 import Table from './components/Table.jsx'
 import Menu from './components/Menu.jsx'
+import NavigationBar from './components/NavigationBar.jsx'
 
 class App extends React.Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class App extends React.Component {
 
   render () {
     return (<div style={mainWrapper}>
-      <h1>Item List</h1>
+      <NavigationBar />
       {/* <List items={this.state.items}/> */}
       <Menu />
       {/* <Table /> */}
