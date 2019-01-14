@@ -36,6 +36,7 @@ class Table extends React.Component {
   }
 
   render () {
+    console.log('props table', this.props)
     return (
       <div style={tableContainer}>
         <table style={table}>

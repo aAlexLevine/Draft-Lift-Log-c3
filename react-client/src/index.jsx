@@ -5,6 +5,9 @@ import List from './components/List.jsx';
 import Table from './components/Table.jsx'
 import Menu from './components/Menu.jsx'
 import NavigationBar from './components/NavigationBar.jsx'
+import Home from './components/Home.jsx'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import NewWorkOutContainer from './components/NewWorkOutContainer.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -15,34 +18,37 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({items:[1,2,3]})
-    // $.ajax({
-    //   url: '/items', 
-    //   success: (data) => {
-    //     this.setState({
-    //       items: [data]
-    //     })
-    //   },
-    //   error: (err) => {
-    //     console.log('err', err);
-    //   }
-    // });
+    // this.setState({items:[1,2,3]})
   }
 
   render () {
-    return (<div style={mainWrapper}>
-      <NavigationBar />
-      {/* <List items={this.state.items}/> */}
-      <Menu />
-      {/* <Table /> */}
-    </div>)
+    return (
+      <div >
+        <NavigationBar />
+     
+        
+        <Router>
+          
+          <div>
+            <Link to='/newWorkout'>menu</Link>
+
+            <Route path='/' component={Home} />
+            <Route path='/newWorkout' render={ (props) => (<NewWorkOutContainer {...props}/>)}/>
+    
+          </div>
+        </Router>
+
+      
+   
+      </div>
+    )
   }
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));
 
-const mainWrapper = {
-  marginLeft:'auto',
-  marginRight:'auto',
-  width:'960px'
-}
+// const mainWrapper = {
+//   marginLeft:'auto',
+//   marginRight:'auto',
+//   width:'960px'
+// }

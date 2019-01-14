@@ -1,6 +1,7 @@
 import React from 'react';
 import Table from './Table.jsx';
 import axios from 'axios'
+import { Route, Link } from 'react-router-dom'
 
 class Menu extends React.Component {
   constructor(props) {
@@ -61,6 +62,7 @@ class Menu extends React.Component {
   
  
   render() {
+    console.log('url---', this.props.match.url)
     return (
       <div >
         
@@ -97,15 +99,21 @@ class Menu extends React.Component {
             </div>
           
           </div>
-          
-          <div style={this.state.startButtonHovered ? startButtonHovered : startButton} 
-               onMouseEnter={this.handleHover} 
-               onMouseLeave={this.handleHover}>
-               Start
-          </div>   
+
+          <Link style={link} to='/newWorkout/table'>
+            <div style={this.state.startButtonHovered ? startButtonHovered : startButton} 
+                 onMouseEnter={this.handleHover} 
+                 onMouseLeave={this.handleHover}
+                 onClick={() => this.props.setPlanAndGroup(this.state.selectedPlan, this.state.selectedPlanGroup)}//update selectedplan state in wrapper and redirect to new workout table
+                >
+                
+                Start
+            </div>
+          </Link>
+
         </div>
-        {/* multiple select drops down to pick plan from users plans  */}
-        <Table/>
+        
+     
       </div>
     )
   }
@@ -184,6 +192,10 @@ const startButton = {
 
 const startButtonHovered = Object.assign({}, startButton)
 startButtonHovered.backgroundColor = 'rgb(62, 62, 124)'
+
+const link = {
+  textDecoration: 'none'
+}
 // const selectBarsContainer = {
 //   margin: 'auto',
 //   width: '100%'
