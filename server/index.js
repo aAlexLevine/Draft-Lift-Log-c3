@@ -8,6 +8,7 @@ var db = require('../database-mysql');
 var app = express();
 
 app.use(express.static(__dirname + '/../react-client/dist'));
+app.use(bodyParser.json())
 
 app.get('/items', function (req, res) {
   console.log('fireeddd')
@@ -33,12 +34,26 @@ app.get('/items', function (req, res) {
 
 app.post('/createNewWorkout', (req, res) => {
   //run DB method takes  promise and catch 
+  console.log('body--',req.body)
   db.createNewWorkOut(req.body)
     .then(response => {
       console.log('Response from DB, recieved at server createNewWorkOut', response)
       res.send(response)
     })
     .catch(err => console.log('error, server, createNewWorkOut', err))
+})
+
+app.get('/getPlans', (req, res) => {
+  console.log(req.query)
+  db.getPlans(req.query.user)
+    .then( response => res.send(response))
+    .catch( err => console.log(err))
+})
+
+app.get('/getGroups', (req, res) => {
+  db.getGroups(req.query.id)
+    .then( response => res.send(response))
+    .catch ( err => console.log(err))
 })
 
 app.listen(3000, function() {

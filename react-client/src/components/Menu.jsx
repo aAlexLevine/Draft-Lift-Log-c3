@@ -9,22 +9,37 @@ class Menu extends React.Component {
     this.state = {
       date: '',
       lastWorkOut: 'Wed Jan 9 2019, Plan: 5x5, Workout: A',
-      data: [],
-      userID: 0,
-      selectedPlan: '-',
+      userID: 1,
+      selectedPlan: '',
       selectedPlanGroup: '-',
       planData: ['5x5', 'IceCream', 'Thrall'],
-      planGroupData: ['A', 'B'],
-      startButtonHovered: false
+      planGroupData: [],
+      startButtonHovered: false,
+      planDisplay:'-',
+      groupDisplay:'-'
     }
     this.createNewWorkOut = this.createNewWorkOut.bind(this)
     this.getDate = this.getDate.bind(this)
-    this.handleSelect = this.handleSelect.bind(this)
+    this.handleSelectPlans = this.handleSelectPlans.bind(this)
+    this.handleSelectGroups = this.handleSelectGroups.bind(this)
     this.handleHover = this.handleHover.bind(this)
+    this.getGroupsFromSelectedPlan = this.getGroupsFromSelectedPlan.bind(this)
   }
 
   componentDidMount() {
     this.getDate()
+
+    axios.get('/getPlans', {
+      params: {
+        user: this.state.userID
+      }
+    })
+      .then( plans => this.setState({planData: plans.data}) )
+      .catch( err => console.log(err))
+
+    //select all from plans where user = user id
+      //then get groups
+
     //select all from plans table in DB
       //set state and grab all plan names, set counts for headers, 
       // and plan group names (e.g. 'a','b', etc) - reduce for unique names
@@ -35,10 +50,10 @@ class Menu extends React.Component {
   createNewWorkOut() {
     const logData = {
       userID: this.state.userID,
-      plan: this.state.plan,
-      planGroup: this.state.planGroup
+      plan: this.state.selectedPlan,
+      planGroup: this.state.selectedPlanGroup
     }
-    
+    console.log('log data obj',logData)
     axios.post('/createNewWorkOut', logData)
       .then( res => console.log('Created new workout log.', res.data) )
       .catch( err => console.log(err) )
@@ -51,18 +66,54 @@ class Menu extends React.Component {
     this.setState({date: dateStr})
   }
 
-  handleSelect(event) {
-    this.setState({[event.target.name]: event.target.value})
+  handleSelectPlans(event) {
+    if (event.target.value !== '-') {
+      this.setState({
+        [event.target.name]: event.target.value,
+        planDisplay: this.state.planData[event.target.value].planName,
+        groupDisplay: '-',
+        planGroupData: []
+      })  
+      this.getGroupsFromSelectedPlan(event.target.value)
+    } else {
+      this.setState({
+        planDisplay: event.target.value, 
+        groupDisplay: '-',
+        planGroupData: []
+      })
+    }
+  }
+
+  handleSelectGroups(event) {
+    if (event.target.value !== '-') {
+      this.setState({
+        [event.target.name]: event.target.value,
+        groupDisplay: this.state.planGroupData[event.target.value].title
+      })
+    } else {
+      this.setState({groupDisplay: event.target.value})
+    }
+  }
+
+  getGroupsFromSelectedPlan(planIndex) {
+    const planID = this.state.planData[planIndex].id
+    axios.get('/getGroups', {
+      params: {
+        id: planID
+      }
+    })
+      .then( groups => {
+        this.setState({planGroupData: groups.data})
+        console.log('groupsData', groups.data)
+      })
+      .catch( err => console.log(err))
   }
 
   handleHover() {
     this.setState({startButtonHovered: !this.state.startButtonHovered})
-    console.log('handleHover fired', startButtonHovered)
   }
   
- 
   render() {
-    console.log('url---', this.props.match.url)
     return (
       <div >
         
@@ -76,24 +127,23 @@ class Menu extends React.Component {
           <div style={selectBarsContainer}>
             
             <div style={selectBar}>
-            <p style={selectedPlan}>{this.state.selectedPlan}</p>
+            <p style={selectedPlan}>{this.state.planDisplay}</p>
               <p style={selectTitles}>Pick your plan</p>
-              <select style ={selectElement} name="selectedPlan" value={this.state.selectedPlan} onChange={this.handleSelect}>
-                <option default></option>
+              <select style ={selectElement} name="selectedPlan" onChange={this.handleSelectPlans}>
+                <option value='-' default></option>
                 {this.state.planData.map((plan, i) => ( 
-                  <option value={plan} key={i}>{plan}</option>  
+                  <option value={i} key={i}>{plan.planName}</option>  
                  ))}
-                
               </select>
             </div>
 
             <div style={selectBar}>
-            <p style={selectedPlan}>{this.state.selectedPlanGroup}</p>
+            <p style={selectedPlan}>{this.state.groupDisplay}</p>
               <p style={selectTitles}>Pick your workout</p>
-              <select style={selectElement} name="selectedPlanGroup" value={this.state.selectedPlanGroup} onChange={this.handleSelect}>
-                <option default></option>
+              <select style={selectElement} name="selectedPlanGroup" onChange={this.handleSelectGroups}>
+                <option value='-' default></option>
                 {this.state.planGroupData.map((group, i) => (
-                  <option key={i}>{group}</option>
+                  <option value={i} key={i}>{group.title}</option>
                 ))}
               </select>
             </div>
@@ -104,7 +154,8 @@ class Menu extends React.Component {
             <div style={this.state.startButtonHovered ? startButtonHovered : startButton} 
                  onMouseEnter={this.handleHover} 
                  onMouseLeave={this.handleHover}
-                 onClick={() => this.props.setPlanAndGroup(this.state.selectedPlan, this.state.selectedPlanGroup)}//update selectedplan state in wrapper and redirect to new workout table
+                 onClick={() => (this.props.setPlanAndGroup(this.state.selectedPlan, this.state.selectedPlanGroup), this.createNewWorkOut ) }
+                 //update selectedplan state in wrapper and redirect to new workout table
                 >
                 
                 Start
