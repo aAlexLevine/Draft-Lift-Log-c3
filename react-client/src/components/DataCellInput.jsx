@@ -1,23 +1,28 @@
 import React from 'react';
+import axios from 'axios';
 
 class DataCellInput extends React.Component { 
   constructor(props){
-    super();
+    super(props);
     this.state = {
-      value: ''
+      weight: '',
+      reps: this.props.exercise.numOfReps,
+      
     }
     this.handleChange = this.handleChange.bind(this)
   }
 
   handleChange(e) {
-    this.setState({value: e.target.value})
+    this.setState({weight: e.target.value})
+    this.props.addSetPropertyToDataCellObj(this.props.exercise.name, this.props.setNum, e.target.value, this.state.reps)
   }
 
   render() {
   
     return (
       <td style={border}>
-        <input style={input} type="text" value={this.state.value} onChange={this.handleChange}/>
+        {/* <div>5</div> */}
+        <input style={input} type="text" value={this.state.weight} onChange={this.handleChange}/>
       </td>
     )
   }

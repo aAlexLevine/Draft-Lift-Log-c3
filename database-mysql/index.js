@@ -29,7 +29,7 @@ const createNewWorkOut = (data) => {
   return new Promise((resolve, reject) => {
   connection.query(`
     INSERT INTO logs (date, user_id, plan_id, plan_group)
-    VALUES (now(), ${data.userID}, ${data.plan}, ${data.planGroup});`, (err, results, fields) => {
+    VALUES (now(), ${data.userID}, ${data.plan}, '${data.planGroup}');`, (err, results, fields) => {
       if (err) {
         reject(err)
       } else {
@@ -69,10 +69,39 @@ const getGroups = planID => {
   })
 }
 
+const getExercisesByGroup = groupID => {
+  return new Promise((resolve, reject) => {
+    connection.query(`SELECT * FROM exercises WHERE group_id =${groupID}`, (err, results, fields) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(results)
+      }
+    })
+  }) 
+}
+
+const insertSets = (set) => {
+  return new Promise((resolve, reject) => {
+    connection.query(`
+    INSERT INTO sets_rest (logs_id, exercise, setNum, weight, reps, rest, date)
+    VALUES (${set.logID}, '${set.data.exercise}', ${set.data.setNum}, ${set.data.weight}, ${set.data.reps}, ${set.data.rest}, now())`,
+      (err, results, fields) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+      })
+  })
+}
+
 
 module.exports = {
   selectAll,
   createNewWorkOut,
   getPlans,
-  getGroups
+  getGroups,
+  getExercisesByGroup,
+  insertSets
 };

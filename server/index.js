@@ -20,16 +20,6 @@ app.get('/items', function (req, res) {
     .catch((err)=> {
       console.log(err)
     })
-  //   function(err, data) {
-  //   if(err) {
-  //     console.log(err)
-  //     res.sendStatus(500);
-  //   } else {
-  //     res.json(data);
-  //     console.log(data)
-  //   }
-  // });
-  
 });
 
 app.post('/createNewWorkout', (req, res) => {
@@ -44,7 +34,6 @@ app.post('/createNewWorkout', (req, res) => {
 })
 
 app.get('/getPlans', (req, res) => {
-  console.log(req.query)
   db.getPlans(req.query.user)
     .then( response => res.send(response))
     .catch( err => console.log(err))
@@ -52,9 +41,27 @@ app.get('/getPlans', (req, res) => {
 
 app.get('/getGroups', (req, res) => {
   db.getGroups(req.query.id)
-    .then( response => res.send(response))
-    .catch ( err => console.log(err))
+    .then(response => res.send(response))
+    .catch(err => console.log(err))
 })
+
+app.get('/getExercisesByGroup', (req, res) => {
+  db.getExercisesByGroup(req.query.groupID)
+    .then(response => res.send(response))
+    .catch(err => console.log(err))
+})
+
+app.post('/insertSets', (req, res) => {
+  db.insertSets(req.body)
+    .then(response => res.send(response))
+    .catch(err => console.log(err))
+})
+
+// app.get('/getSetCountByGroup', (req, res) => {
+//   db.getSetCountByGroup(req.query.groupID)
+//     .then(response => res.send(response))
+//     .catch(err => console.log(err))
+// })
 
 app.listen(3000, function() {
   console.log('listening on port 3000!');

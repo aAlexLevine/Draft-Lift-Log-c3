@@ -6,7 +6,7 @@ const Headers = (props) => (
           Set {props.idx + 1}
         </th>
         {props.idx + 1 < props.numOfHeaders ? <th style={border}>Rest</th> : null }
-        {/* {console.log('idx', props.idx, 'numOfHeaders', props.numOfHeaders)} */}
+        {/* {console.log('idx', props.idx, 'numOfHeaders', props.numOfHeaders, 'bool', props.idx + 1 < props.numOfHeaders)} */}
       </React.Fragment>      
 )   
 

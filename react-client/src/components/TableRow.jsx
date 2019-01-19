@@ -21,16 +21,14 @@ class TableRow extends React.Component {
     return (
       <tr>
         <td style={border}>
-          {this.props.exercise}
+          {this.props.exercise.name}
         </td>
-        {this.props.rowHeaders.map((header, i) => (
-        <React.Fragment>
-          <DataCellInput/>
-          {i + 1 < this.props.rowHeaders.length ? <DataCellTimer/> : null}  
+        {[... new Array(this.props.setCount)].map((header, i) => (
+        <React.Fragment key={'frag' + i}>
+          <DataCellInput setNum={i + 1} exercise={this.props.exercise} addSetPropertyToDataCellObj={this.props.addSetPropertyToDataCellObj}/>
+          {i + 1 < this.props.setCount ? <DataCellTimer /> : null}  
           </React.Fragment>
-       
-      
-     ))}
+        ))} 
       </tr>
     )
   }

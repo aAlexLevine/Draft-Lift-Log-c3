@@ -1,63 +1,109 @@
 import React from 'react';
 import TableRow from './TableRow.jsx';
 import Headers from './Headers.jsx';
+import axios from 'axios';
 
 class Table extends React.Component {
-  constructor(props) {
-    super(props) 
+    constructor(props) {
+      super(props)
       this.state = {
-        headersCount: 5,
-        rowHeaders: ['Set 1', 'Set 2', 'Set 3 ', 'Set 4', 'Set 5'],
-        addedHeaders: [],
-        exerciseName:['Overhead Press', 'Front Squat/Clean', 'Bent-over Row', 'Dead Lift', 'Pull-up']
+        logID: '',
+        setCount: '',
+        dataCellInputs: {},
+        exercises: ['Overhead Press', 'Front Squa`t/Clean', 'Bent-over Row', 'Dead Lift', 'Pull-up']
       }
+      this.buildStateObjForAllDataCells = this.buildStateObjForAllDataCells.bind(this)
+      this.submitSets = this.submitSets.bind(this)
       // this.onChange = this.onChange.bind(this)
       this.handleSelect = this.handleSelect.bind(this)
       // this.setNumberIncrementor = this.setNumberIncrementor.bind(this)
-  }
+      this.addSetPropertyToDataCellObj = this.addSetPropertyToDataCellObj.bind(this)
+      this.submitSets = this.submitSets.bind(this)
+    }
 
-  //**TODO: container component that inserts blank data into logs table in DB for todays date
-  //headers will be based on the amount blank cells pulled down from DB 
+
   componentDidMount() {
-      //select all from logs where date equals todays date to load exercises
+    const { group } = this.props
+    axios.get('/getExercisesByGroup', {
+        params: {
+          groupID: group.id
+        }
+      })
+      .then(res => this.setState({
+          exercises: res.data,
+          setCount: group.setCount
+        }, this.buildStateObjForAllDataCells
+      ))
+      .catch(err => console.log(err))
   }
 
-  addExerciseName(name) {
+  buildStateObjForAllDataCells() {
+    const allDataCells = {}
+    for (let exercise of this.state.exercises) {
+      // console.log('******', exercise)
+      let name = exercise.name
+        allDataCells[name] = {}
+        for (let i = 1; i <= this.state.setCount; i++) {
+          allDataCells[name]['set' + i] = {exercise: name, setNum: i, weight: null, reps: null, rest: null}
+        }
+    }
+    this.setState({dataCellInputs: allDataCells}) 
+  }
+
+  addSetPropertyToDataCellObj(exercise, setNum, weight = null, reps = null, rest = null) {
+    const copy = this.state.dataCellInputs
+    copy[exercise]['set' + setNum] = {exercise: exercise, setNum: setNum, weight: weight, reps: reps, rest: rest}
+    this.setState({dataCellInputs: copy})
+    //add func for rest times
+    console.log('dataCellInputs', this.state.dataCellInputs)
+  }
+
+  submitSets() {
+    const exerciseRows = this.state.dataCellInputs
+    let postObj
+    let submits = 0
+    for (let row in exerciseRows) {
+      for (let set in exerciseRows[row]) {
+        postObj = {
+          logID: this.props.logID,
+          data: exerciseRows[row][set]
+        }
+        axios.post('/insertSets', postObj)
+        .then()
+        .catch(err => console.log(err))
+      }
+    }
+    console.log('submitted')
+  }
+
+  addExercise(name) {
     //set state add exercise 
-    this.setState({exerciseName: [...this.state.exerciseName, name]})
+    this.setState({exercises: [...this.state.exercises, name]})
   }
-  submit() {
 
-  }
   //remove and edit 
   handleSelect(event) {
-    // console.log(event.)
-    this.setState({exerciseName: [...this.state.exerciseName, event.target.value]})
+    this.setState({exercises: [...this.state.exercises, event.target.value]})
   }
 
   render () {
-    console.log('props table', this.props)
     return (
       <div style={tableContainer}>
+      <button onClick={this.submitSets}>submit</button>
         <table style={table}>
           <thead>
           <tr>
             <th style={border}> Exercise</th>
-
-            {this.state.rowHeaders.map((header, idx) => (
-            <Headers numOfHeaders={this.state.rowHeaders.length} idx={idx}/>
+            {[... new Array(this.state.setCount)].map((header, idx) => (
+              <Headers key={idx} numOfHeaders={this.state.setCount} idx={idx}/>
             ))}     
-          
           </tr>
           </thead>
           
-          {/* map through state of exercises and create a row for each new exercise */}
-          {/* add exercise table data cell as a component  */}
           <tbody>
-     
-            {this.state.exerciseName.map((exercise, i) => (<TableRow key={i} exercise={exercise} rowHeaders={this.state.rowHeaders}/>))}
+            {this.state.exercises.map((exercise, i) => (
+              <TableRow key={i} exercise={exercise} setCount={this.state.setCount}  addSetPropertyToDataCellObj={this.addSetPropertyToDataCellObj}/>))}
           </tbody>
-
         </table>
       </div>
     )
@@ -66,6 +112,7 @@ class Table extends React.Component {
 }
 
 export default Table;
+
 
 const tableContainer = {
   overflowX: 'auto',

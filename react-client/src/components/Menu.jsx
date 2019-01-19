@@ -9,7 +9,7 @@ class Menu extends React.Component {
     this.state = {
       date: '',
       lastWorkOut: 'Wed Jan 9 2019, Plan: 5x5, Workout: A',
-      userID: 1,
+      userID: this.props.userID,
       selectedPlan: '',
       selectedPlanGroup: '-',
       planData: ['5x5', 'IceCream', 'Thrall'],
@@ -18,7 +18,7 @@ class Menu extends React.Component {
       planDisplay:'-',
       groupDisplay:'-'
     }
-    this.createNewWorkOut = this.createNewWorkOut.bind(this)
+    // this.createNewWorkOut = this.createNewWorkOut.bind(this)
     this.getDate = this.getDate.bind(this)
     this.handleSelectPlans = this.handleSelectPlans.bind(this)
     this.handleSelectGroups = this.handleSelectGroups.bind(this)
@@ -28,7 +28,6 @@ class Menu extends React.Component {
 
   componentDidMount() {
     this.getDate()
-
     axios.get('/getPlans', {
       params: {
         user: this.state.userID
@@ -36,28 +35,6 @@ class Menu extends React.Component {
     })
       .then( plans => this.setState({planData: plans.data}) )
       .catch( err => console.log(err))
-
-    //select all from plans where user = user id
-      //then get groups
-
-    //select all from plans table in DB
-      //set state and grab all plan names, set counts for headers, 
-      // and plan group names (e.g. 'a','b', etc) - reduce for unique names
-  }
-
-  //insert a new work out log into logs table
-    //pass down data for sets_rest
-  createNewWorkOut() {
-    const logData = {
-      userID: this.state.userID,
-      plan: this.state.selectedPlan,
-      planGroup: this.state.selectedPlanGroup
-    }
-    console.log('log data obj',logData)
-    axios.post('/createNewWorkOut', logData)
-      .then( res => console.log('Created new workout log.', res.data) )
-      .catch( err => console.log(err) )
-  
   }
 
   getDate() {
@@ -154,10 +131,8 @@ class Menu extends React.Component {
             <div style={this.state.startButtonHovered ? startButtonHovered : startButton} 
                  onMouseEnter={this.handleHover} 
                  onMouseLeave={this.handleHover}
-                 onClick={() => (this.props.setPlanAndGroup(this.state.selectedPlan, this.state.selectedPlanGroup), this.createNewWorkOut ) }
-                 //update selectedplan state in wrapper and redirect to new workout table
+                 onClick = {() => {this.props.setPlanAndGroup(this.state.planData[this.state.selectedPlan], this.state.planGroupData[this.state.selectedPlanGroup])}}
                 >
-                
                 Start
             </div>
           </Link>
