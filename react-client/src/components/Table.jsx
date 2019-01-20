@@ -17,12 +17,16 @@ class Table extends React.Component {
       // this.onChange = this.onChange.bind(this)
       this.handleSelect = this.handleSelect.bind(this)
       // this.setNumberIncrementor = this.setNumberIncrementor.bind(this)
-      this.addSetPropertyToDataCellObj = this.addSetPropertyToDataCellObj.bind(this)
+      this.updateWeightPropertyForDataCell = this.updateWeightPropertyForDataCell.bind(this)
       this.submitSets = this.submitSets.bind(this)
+      this.getDate = this.getDate.bind(this)
+      this.updateRepsPropertyForDataCell = this.updateRepsPropertyForDataCell.bind(this)
     }
 
 
   componentDidMount() {
+    this.getDate()
+
     const { group } = this.props
     axios.get('/getExercisesByGroup', {
         params: {
@@ -50,12 +54,20 @@ class Table extends React.Component {
     this.setState({dataCellInputs: allDataCells}) 
   }
 
-  addSetPropertyToDataCellObj(exercise, setNum, weight = null, reps = null, rest = null) {
+  updateWeightPropertyForDataCell(exercise, setNum, weight, reps) {
+    if (weight === '') { reps = null } 
     const copy = this.state.dataCellInputs
-    copy[exercise]['set' + setNum] = {exercise: exercise, setNum: setNum, weight: weight, reps: reps, rest: rest}
+    copy[exercise]['set' + setNum].weight = weight
+    copy[exercise]['set' + setNum].reps = reps     
     this.setState({dataCellInputs: copy})
     //add func for rest times
     console.log('dataCellInputs', this.state.dataCellInputs)
+  }
+
+  updateRepsPropertyForDataCell(exercise, setNum, reps) {
+    const copy = this.state.dataCellInputs
+    copy[exercise]['set' + setNum].reps = reps
+    console.log('reps changed',this.state.dataCellInputs)
   }
 
   submitSets() {
@@ -86,9 +98,16 @@ class Table extends React.Component {
     this.setState({exercises: [...this.state.exercises, event.target.value]})
   }
 
+  getDate() {
+    const date = new Date()
+    const dateStr = date.toDateString()
+    this.setState({date: dateStr})
+  }
+
   render () {
     return (
       <div style={tableContainer}>
+      <div style={date}>{this.state.date}</div>
       <button onClick={this.submitSets}>submit</button>
         <table style={table}>
           <thead>
@@ -102,7 +121,12 @@ class Table extends React.Component {
           
           <tbody>
             {this.state.exercises.map((exercise, i) => (
-              <TableRow key={i} exercise={exercise} setCount={this.state.setCount}  addSetPropertyToDataCellObj={this.addSetPropertyToDataCellObj}/>))}
+              <TableRow key={i} 
+                        exercise={exercise} 
+                        setCount={this.state.setCount}  
+                        updateWeightPropertyForDataCell={this.updateWeightPropertyForDataCell}
+                        updateRepsPropertyForDataCell={this.updateRepsPropertyForDataCell}
+                        />))}
           </tbody>
         </table>
       </div>
@@ -113,10 +137,15 @@ class Table extends React.Component {
 
 export default Table;
 
+const date = {
+  fontFamily: 'Montserrat',
+  textAlign: 'center',
+  fontSize: '40px'
+}
 
 const tableContainer = {
   overflowX: 'auto',
-  // width: '100%',
+  width: '100%',
   // margin: 'auto'
 }
 

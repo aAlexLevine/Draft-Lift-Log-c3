@@ -34,6 +34,7 @@ const createNewWorkOut = (data) => {
         reject(err)
       } else {
         // return results
+        // console.log('fields in DB',fields)
         resolve(results)
       }
     })

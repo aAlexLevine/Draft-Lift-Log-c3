@@ -29,7 +29,7 @@ class App extends React.Component {
         
         <Router>
           
-          <div>
+          <div style={mainWrapper}>
             <Link to='/newWorkout'>menu</Link>
 
             <Route path='/' component={Home} />
@@ -47,8 +47,8 @@ class App extends React.Component {
 
 ReactDOM.render(<App />, document.getElementById('app'));
 
-// const mainWrapper = {
-//   marginLeft:'auto',
-//   marginRight:'auto',
-//   width:'960px'
-// }
+const mainWrapper = {
+  // marginLeft:'auto',
+  // marginRight:'auto',
+  // width:'960px'
+}

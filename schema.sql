@@ -53,10 +53,16 @@ CREATE TABLE sets_rest (
   setNum int NOT NULL,
   weight int,
   reps int,
-  rest int,
+  -- rest int,
   date date NOT NULL,
   PRIMARY KEY (ID) 
 );
+
+-- CREATE TABLE rest (
+--   id int NOT NULL AUTO_INCREMENT,
+--   sets_rest_id int NOT NULL,
+--   PRIMARY KEY (ID)
+-- );
 
 CREATE TABLE logs ( 
   id int NOT NULL AUTO_INCREMENT,

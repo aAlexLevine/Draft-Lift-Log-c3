@@ -76,8 +76,13 @@ class DataCellTimer extends React.Component {
 
 export default DataCellTimer;
 
+//TODO:
+//use prettyMS lib, display inside a timer icon thats clickable, animate to depress on click
+//green circle to start, turns red - to stop, three line menu to edit manually
+//add func to update the datacell state object
+
 const border = {
-  borderBottom: '1px solid black',
+  // borderBottom: '1px solid black',
   padding: '8px',
   whiteSpace: 'nowrap',
   overflow: 'hidden'

@@ -38,9 +38,10 @@ class NewWorkOutContainer extends React.Component {
     // console.log('log data obj',logData)
     axios.post('/createNewWorkOut', logData)
       .then(results => {
-        console.log('Created new workout log.', results.data.insertId)
+        console.log('Created new workout log.', results.data)
         this.setState({
           logID: results.data.insertId
+          // logDate: results.data
         })
       })
       .catch(err => console.log(err))
@@ -48,7 +49,7 @@ class NewWorkOutContainer extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={container}>
         <Route exact path={`/newWorkout/`} render={(props) => (<Menu {...props} userID={this.state.userID} setPlanAndGroup={this.setPlanAndGroup} createNewWorkOut={this.createNewWorkOut}/>)}/> 
         <Route path={`/newWorkout/:table`} render={(props) => (<Table {...props} userID={this.state.userID} logID={this.state.logID} plan={this.state.selectedPlan} group={this.state.selectedPlanGroup}/>)}/> 
       </div>
@@ -56,3 +57,8 @@ class NewWorkOutContainer extends React.Component {
   }
 }
 export default NewWorkOutContainer
+
+const container = {
+  margin: 'auto',
+  // width: '90%'
+}
