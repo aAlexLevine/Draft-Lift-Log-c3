@@ -6,34 +6,52 @@ class TableRow extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      cellData: '',
-      sets:[]
+      togglePreviousWorkouts: false
     }
-
+    this.togglePreviousWorkouts = this.togglePreviousWorkouts.bind(this)
   }
 
-  sendRowDatatoDB() {
-    //insert into logs date, userid, plan_id, + this.state
+  togglePreviousWorkouts() {
+    this.setState({togglePreviousWorkouts: !this.state.togglePreviousWorkouts})
   }
 
 //if set length greater that current total update table headers
   render() {
     return (
-      <tr style={row}>
-        <td style={firstColumn}>
-          {this.props.exercise.name}
-        </td>
-        {[... new Array(this.props.setCount)].map((header, i) => (
-        <React.Fragment key={'frag' + i}>
-          <DataCellInput setNum={i + 1} 
-                         exercise={this.props.exercise} 
-                         updateWeightPropertyForDataCell={this.props.updateWeightPropertyForDataCell} 
-                         updateRepsPropertyForDataCell={this.props.updateRepsPropertyForDataCell}
-                         />
-          {i + 1 < this.props.setCount ? <DataCellTimer /> : null}  
-          </React.Fragment>
-        ))} 
-      </tr>
+      <React.Fragment>
+        <tr style={row}>
+          <td style={firstColumn}>
+            {/* button to toggle previous workouts under current exercise row */}
+            {this.props.exercise.name}
+            <button onClick={this.togglePreviousWorkouts}>toggle history</button>
+          </td>
+          {[... new Array(this.props.setCount)].map((header, i) => (
+            <React.Fragment key={'frag' + i}>
+              <DataCellInput setNum={i + 1} 
+                            exercise={this.props.exercise} 
+                            updateWeightPropertyForDataCell={this.props.updateWeightPropertyForDataCell} 
+                            updateRepsPropertyForDataCell={this.props.updateRepsPropertyForDataCell}
+                            />
+              {i + 1 < this.props.setCount ? <DataCellTimer /> : null}  
+            </React.Fragment>
+          ))}
+        </tr>
+
+      {/* TODO: sort each array, turn into separate component */}
+      {this.state.togglePreviousWorkouts ? 
+        this.props.previousWorkouts.map((workout, i) =>  (
+          <tr style={row} key={'workout' + i}>
+            <td>{workout.date}</td>
+            {workout[this.props.exercise.name].sets.map((set, i) => (
+              <React.Fragment key={'setRest' + i}>
+              <td>{set.reps}x{set.weight}</td>
+              <td>{set.rest}</td>
+              </React.Fragment>
+            ))} 
+          </tr>
+        )) : null}
+     
+      </React.Fragment>
     )
   }
 }

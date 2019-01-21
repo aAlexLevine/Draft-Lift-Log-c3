@@ -10,7 +10,8 @@ class Table extends React.Component {
         logID: '',
         setCount: '',
         dataCellInputs: {},
-        exercises: ['Overhead Press', 'Front Squa`t/Clean', 'Bent-over Row', 'Dead Lift', 'Pull-up']
+        exercises: ['Overhead Press', 'Front Squa`t/Clean', 'Bent-over Row', 'Dead Lift', 'Pull-up'],
+        previousWorkouts: []
       }
       this.buildStateObjForAllDataCells = this.buildStateObjForAllDataCells.bind(this)
       this.submitSets = this.submitSets.bind(this)
@@ -21,6 +22,8 @@ class Table extends React.Component {
       this.submitSets = this.submitSets.bind(this)
       this.getDate = this.getDate.bind(this)
       this.updateRepsPropertyForDataCell = this.updateRepsPropertyForDataCell.bind(this)
+      this.getLastThreeLogIds = this.getLastThreeLogIds.bind(this)
+      this.organizeSetsRestData = this.organizeSetsRestData.bind(this)
     }
 
 
@@ -38,13 +41,58 @@ class Table extends React.Component {
           setCount: group.setCount
         }, this.buildStateObjForAllDataCells
       ))
+      .then(this.getLastThreeLogIds)
       .catch(err => console.log(err))
+    
+  }
+
+  getLastThreeLogIds() {
+    const prevWorkouts = []
+    axios.get('/getLastThreeLogIds', {
+      params: {
+        userID: this.props.userID,
+        planID: this.props.plan.id,
+        group: this.props.group.title
+      }
+    })
+    .then(results => {
+      console.log('last three logs', results)
+      for (let log of results.data) {
+        axios.get('/getSetsRestByLogid', {
+          params: {
+            logID: log.id
+          }
+        })
+        .then((setsRest)=>{
+          console.log('setsRest', setsRest)
+          if (setsRest.data.length > 0) {
+            prevWorkouts.push(this.organizeSetsRestData(setsRest.data))
+          this.setState({previousWorkouts: prevWorkouts})
+          }      
+        })
+      }
+    })
+    .catch(err => console.log(err))
+  }
+
+  organizeSetsRestData(records) {
+    let reducedRecords = records.reduce((acc, curr) => {
+      if (!acc[curr.exercise]) {
+        acc[curr.exercise] = { sets: [] }
+      }
+      if (!acc.date) {
+        acc.date = curr.dateCreated
+      }
+      acc[curr.exercise].sets.push( {setNum: curr.setNum, reps: curr.reps, weight: curr.weight, rest: curr.rest } )
+      return acc
+    }, {})
+    console.log('---reducedRecords----',reducedRecords)
+    return reducedRecords
   }
 
   buildStateObjForAllDataCells() {
     const allDataCells = {}
     for (let exercise of this.state.exercises) {
-      // console.log('******', exercise)
       let name = exercise.name
         allDataCells[name] = {}
         for (let i = 1; i <= this.state.setCount; i++) {
@@ -56,7 +104,7 @@ class Table extends React.Component {
 
   updateWeightPropertyForDataCell(exercise, setNum, weight, reps) {
     if (weight === '') { reps = null } 
-    const copy = this.state.dataCellInputs
+    const copy = Object.assign({}, this.state.dataCellInputs)
     copy[exercise]['set' + setNum].weight = weight
     copy[exercise]['set' + setNum].reps = reps     
     this.setState({dataCellInputs: copy})
@@ -65,15 +113,18 @@ class Table extends React.Component {
   }
 
   updateRepsPropertyForDataCell(exercise, setNum, reps) {
-    const copy = this.state.dataCellInputs
+    const copy = Object.assign({}, this.state.dataCellInputs)
     copy[exercise]['set' + setNum].reps = reps
     console.log('reps changed',this.state.dataCellInputs)
+  }
+
+  updateRestTimePropertyForDataCell(exercise, setNum, time) {
+
   }
 
   submitSets() {
     const exerciseRows = this.state.dataCellInputs
     let postObj
-    let submits = 0
     for (let row in exerciseRows) {
       for (let set in exerciseRows[row]) {
         postObj = {
@@ -126,6 +177,7 @@ class Table extends React.Component {
                         setCount={this.state.setCount}  
                         updateWeightPropertyForDataCell={this.updateWeightPropertyForDataCell}
                         updateRepsPropertyForDataCell={this.updateRepsPropertyForDataCell}
+                        previousWorkouts={this.state.previousWorkouts}
                         />))}
           </tbody>
         </table>

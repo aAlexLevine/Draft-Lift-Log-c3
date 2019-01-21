@@ -28,7 +28,7 @@ const createNewWorkOut = (data) => {
   
   return new Promise((resolve, reject) => {
   connection.query(`
-    INSERT INTO logs (date, user_id, plan_id, plan_group)
+    INSERT INTO logs (dateCreated, user_id, plan_id, plan_group)
     VALUES (now(), ${data.userID}, ${data.plan}, '${data.planGroup}');`, (err, results, fields) => {
       if (err) {
         reject(err)
@@ -46,9 +46,9 @@ const getPlans = (userID) => {
   return new Promise((resolve, reject) => {
     connection.query(`SELECT * FROM plans WHERE user_id =${userID};`, (err, results, fields) => {
       // connection.query(`
-      //     SELECT * 
-      //     FROM plans 
-      //     INNER JOIN groups ON plans.id=groups.plan_id;`, (err, results, fields) => {
+          // SELECT * 
+          // FROM plans 
+          // INNER JOIN groups ON plans.id=groups.plan_id;`, (err, results, fields) => {
       if (err) {
         reject(err)
       } else {
@@ -97,6 +97,42 @@ const insertSets = (set) => {
   })
 }
 
+const getLastThreeLogIds = (userID, planID, group) => {
+  return new Promise((resolve, reject) => {
+    connection.query(`
+    SELECT * 
+    FROM logs
+    WHERE user_id=${userID} AND plan_id=${planID} AND plan_group='${group}' AND 
+    exists (select id from sets_rest where logs_id=logs.id)
+    ORDER BY dateCreated DESC
+    LIMIT 3;`, 
+    (err, results, fields) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(results)
+      }
+    })
+  })
+}
+
+const getSetsRestByLogid = (logID) => {
+  return new Promise((resolve, reject) => {
+    connection.query(`
+    SELECT *
+    FROM sets_rest
+    INNER JOIN logs on sets_rest.logs_id=logs.id
+    WHERE logs_id=${logID}
+    ORDER BY exercise;`, (err, results, fields) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(results)
+      }
+    })
+  })
+}
+
 
 module.exports = {
   selectAll,
@@ -104,5 +140,7 @@ module.exports = {
   getPlans,
   getGroups,
   getExercisesByGroup,
-  insertSets
+  insertSets,
+  getLastThreeLogIds,
+  getSetsRestByLogid
 };

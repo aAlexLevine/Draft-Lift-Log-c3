@@ -57,11 +57,20 @@ app.post('/insertSets', (req, res) => {
     .catch(err => console.log(err))
 })
 
-// app.get('/getSetCountByGroup', (req, res) => {
-//   db.getSetCountByGroup(req.query.groupID)
-//     .then(response => res.send(response))
-//     .catch(err => console.log(err))
-// })
+app.get('/getLastThreeLogIds', (req, res) => {
+  const {userID, planID, group} = req.query
+  db.getLastThreeLogIds(userID, planID, group)
+    .then(response => res.send(response))
+    .catch(err => console.log(err))
+})
+
+app.get('/getSetsRestByLogid', (req, res) => {
+  console.log('server log id', req.query.logID)
+  db.getSetsRestByLogid(req.query.logID)
+  .then(response => res.send(response))
+  .catch(err => console.log(err))
+})
+
 
 app.listen(3000, function() {
   console.log('listening on port 3000!');

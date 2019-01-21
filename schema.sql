@@ -32,6 +32,7 @@ CREATE TABLE groups (
   setCount int NOT NULL,
   -- repCount int NOT NULL,
   PRIMARY KEY (ID)
+  -- should make title UNIQUE
   -- set count is just to load preset starter data for set headers
 );
 
@@ -53,7 +54,7 @@ CREATE TABLE sets_rest (
   setNum int NOT NULL,
   weight int,
   reps int,
-  -- rest int,
+  rest int,
   date date NOT NULL,
   PRIMARY KEY (ID) 
 );
@@ -66,7 +67,7 @@ CREATE TABLE sets_rest (
 
 CREATE TABLE logs ( 
   id int NOT NULL AUTO_INCREMENT,
-  date date NOT NULL,
+  dateCreated datetime NOT NULL,
   user_id int NOT NULL,
   plan_id int NOT NULL,
   plan_group varchar(255) NOT NULL,
@@ -77,8 +78,23 @@ CREATE TABLE logs (
  *    mysql -u root < server/schema.sql
  *  to create the database and the tables.*/
 
- INSERT INTO logs (date, user_id, plan_id, plan_group)
+ INSERT INTO logs (dateCreated, user_id, plan_id, plan_group)
  VALUES (now(), 1, 1, 'B');
+
+ INSERT INTO logs (dateCreated, user_id, plan_id, plan_group)
+ VALUES (now(), 1, 1, 'A');
+
+ INSERT INTO logs (dateCreated, user_id, plan_id, plan_group)
+ VALUES (now(), 1, 1, 'A');
+
+ INSERT INTO logs (dateCreated, user_id, plan_id, plan_group)
+ VALUES (now(), 1, 1, 'A');
+
+ INSERT INTO logs (dateCreated, user_id, plan_id, plan_group)
+ VALUES (now(), 1, 1, 'A');
+
+ INSERT INTO logs (dateCreated, user_id, plan_id, plan_group)
+ VALUES (now(), 1, 1, 'A');
 
 --  INSERT INTO sets_rest(logs_id, exercise, setNum, reps, rest, date)
 --  VALUES (1, 'OverheadPress', 1, 5, 4000, now());
