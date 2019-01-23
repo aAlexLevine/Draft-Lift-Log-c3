@@ -1,6 +1,8 @@
 import React from 'react';
 import DataCellInput from './DataCellInput.jsx';
 import DataCellTimer from './DataCellTimer.jsx';
+import Transition from 'react-transition-group/Transition';
+
 
 class TableRow extends React.Component {
   constructor(props){
@@ -40,15 +42,27 @@ class TableRow extends React.Component {
       {/* TODO: sort each array, turn into separate component */}
       {this.state.togglePreviousWorkouts ? 
         this.props.previousWorkouts.map((workout, i) =>  (
-          <tr style={row} key={'workout' + i}>
-            <td>{workout.date}</td>
-            {workout[this.props.exercise.name].sets.map((set, i) => (
-              <React.Fragment key={'setRest' + i}>
-              <td>{set.reps}x{set.weight}</td>
-              <td>{set.rest}</td>
-              </React.Fragment>
-            ))} 
-          </tr>
+          // <Transition in={inProp} timeout={duration}>
+            // {(state) => (
+
+            
+            <tr style={row
+              // {
+              //   ...defaultStyle,
+              //   ...transitionStyles[state]
+              // }
+            } 
+                key={'workout' + i}>
+              <td>{new Date(workout.date).toDateString()}</td>
+              {workout[this.props.exercise.name].sets.map((set, i) => (
+                <React.Fragment key={'setRest' + i}>
+                <td>{set.reps}x{set.weight}</td>
+                <td>{set.rest}</td>
+                </React.Fragment>
+              ))} 
+            </tr>
+          // )}
+          // </Transition>
         )) : null}
      
       </React.Fragment>
@@ -69,3 +83,16 @@ const firstColumn = {
 const row = {
   borderBottom: '1px solid black'
 }
+
+// const duration = 300;
+
+// const defaultStyle = {
+//   transition: `opacity ${duration}ms ease-in-out`,
+//   opacity: 0,
+//   borderBottom: '1px solid black'
+// }
+
+// const transitionStyles = {
+//   entering: { opacity: 0 },
+//   entered:  { opacity: 1 },
+// };

@@ -6,68 +6,94 @@ class DataCellTimer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      startTime: '',
-      displayTime: 0,
-      formattedTime: '00 : 00 : 00'
+      formattedTime: '0s',
+      toggleStopTimer: false,
+      px : 0,
+      elapsedTime: 0,
+      savedTime: 0,
+      clockColor: 'black'
     }
     this.startTimer = this.startTimer.bind(this)
     this.stopTmer = this.stopTmer.bind(this)
     this.resetTimer = this.resetTimer.bind(this)
     this.formatDispay = this.formatDispay.bind(this)
-
+    this.handleMouseDown = this.handleMouseDown.bind(this)
+    this.handleMouseUp = this.handleMouseUp.bind(this)
   }
 
   formatDispay(timeStarted) {
-    const timeDiff = Date.now() - timeStarted
-    const parsedObj = parseMS(timeDiff)
-    let { hours, minutes, seconds, milliseconds } = parsedObj
-    seconds < 10 ? seconds = `0${seconds}` : null
-    minutes < 10 ? minutes = `0${minutes}` : null
-    hours < 10 ? hours = `0${hours}` : null
-
-    this.setState({formattedTime: `${hours} : ${minutes} : ${seconds}`})
-    if (hours === 2) {
+    const timeDiff = (Date.now() - timeStarted) + this.state.savedTime
+    this.setState({
+      formattedTime: prettyMs(timeDiff),
+      elapsedTime: timeDiff
+    })
+    if (timeDiff > 7200000) {
       this.stopTmer()
     }
+    
+    // -Format timer display to 00 : 00 : 00
+    // const parsedObj = parseMS(timeDiff)
+    // let { hours, minutes, seconds, milliseconds } = parsedObj
+    // seconds < 10 ? seconds = `0${seconds}` : null
+    // minutes < 10 ? minutes = `0${minutes}` : null
+    // hours < 10 ? hours = `0${hours}` : null
+
+    // this.setState({formattedTime: `${hours} : ${minutes} : ${seconds}`})
+    // if (hours === 2) {
+    //   this.stopTmer()
+    // }
   }
 
-  startTimer() {
-    let timeStarted = Date.now()
+  startTimer(event) {
+    const timeStarted = Date.now()
+    this.setState({toggleStopTimer: !this.state.toggleStopTimer, clockColor: 'red'})
     this.timerInterval = setInterval(() => this.formatDispay(timeStarted), 1000)   
   }
 
-  stopTmer(){
+  stopTmer(lastTimeDiff){
+    this.setState({
+      toggleStopTimer: !this.state.toggleStopTimer,
+      savedTime: this.state.elapsedTime,
+      clockColor: 'black'
+    })
     clearInterval(this.timerInterval)
   }
   resetTimer() {
 
   }
 
+  handleMouseDown() {
+    this.setState({px: 4})
+  }
+  handleMouseUp() {
+    this.setState({px: 0})
+  }
+
+  componentWillUnmount() {
+    this.stopTmer()
+  }
+
   render() {
-
-    //hit start button - get time in millis save to state at that moment 
-    //run a set interval every second that gets the time in millis 
-      //and subtracts the start time and updates the display time
-    //stop button - to clear interval
-    //reset button - changes display to 0  
-    //display the millis time converted w/ library to format
-
-    // let x = new Date()
-    // // console.log(x)
-    
-    // console.log(x.toLocaleTimeString())
-// console.log(Date.now())
-
-// let x = prettyMs(this.state.displayTime)
-// console.log(parseMS(this.state.displayTime))
-
+    const clockPressed = {
+      fontSize:'25px',
+      cursor: 'pointer',
+      transform: `translateY(${this.state.px}px)`,
+      color: `${this.state.clockColor}`,
+      margin: 'auto auto',
+      padding: '8px'
+    }
+//this.state.clockPressed ? clockPressed : clock
     return (
-      <td style={border}>
-        {this.state.formattedTime}
-        {/* {prettyMs(this.state.displayTime, {msDecimalDigits: 2})} */}
-        <div>
-          <button onClick={this.startTimer}>start</button>
-          <button onClick={this.stopTmer}>stop</button>
+      <td style={timerCell}>
+      <div style={timerContainer}>
+          <i style={clockPressed} 
+              onMouseDown={this.handleMouseDown}
+              onMouseUp={this.handleMouseUp}
+              onClick={this.state.toggleStopTimer ? this.stopTmer : this.startTimer} 
+              className="fas fa-clock"></i>
+          <div style={formattedTime}>
+            {this.state.formattedTime}
+          </div>
         </div>
       </td>
     )
@@ -81,10 +107,22 @@ export default DataCellTimer;
 //green circle to start, turns red - to stop, three line menu to edit manually
 //add func to update the datacell state object
 
-const border = {
-  // borderBottom: '1px solid black',
+const clock = {
+  fontSize:'25px',
+  cursor: 'pointer'
+}
+
+const formattedTime = {
+  margin: 'auto auto',
+  padding: '8px'
+}
+
+const timerCell = {              
   padding: '8px',
   whiteSpace: 'nowrap',
   overflow: 'hidden'
+}
 
+const timerContainer = {
+  display: 'flex'
 }
