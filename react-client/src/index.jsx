@@ -9,43 +9,23 @@ import Home from './components/Home.jsx'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import NewWorkOutContainer from './components/NewWorkOutContainer.jsx';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { 
-      items: []
-    }
-  }
 
-  componentDidMount() {
-    // this.setState({items:[1,2,3]})
-  }
-
-  render () {
-    return (
-      <div >
-        <NavigationBar />
-     
-        
-        <Router>
-          
-          <div style={mainWrapper}>
-            <Link to='/newWorkout'>menu</Link>
-
-            <Route path='/' component={Home} />
-            <Route path='/newWorkout' render={ (props) => (<NewWorkOutContainer {...props}/>)}/>
-    
-          </div>
-        </Router>
-
-      
-   
+const App = () => (
+  <div>
+    <NavigationBar />
+    <Router>
+      <div style={mainWrapper}>
+        <Link to='/newWorkout'>menu</Link>
+        <Route path='/' component={Home} />
+        <Route path='/newWorkout' render={ (props)=> (
+          <NewWorkOutContainer {...props} />)}/>
       </div>
-    )
-  }
-}
+    </Router>
+  </div>
+)
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render( <App />, document.getElementById('app'));
+
 
 const mainWrapper = {
   // marginLeft:'auto',

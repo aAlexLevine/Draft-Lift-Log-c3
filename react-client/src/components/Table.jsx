@@ -198,7 +198,8 @@ const date = {
 const tableContainer = {
   overflowX: 'auto',
   width: '100%',
-  // margin: 'auto'
+  marginTop: '5%',
+  marginBottom: '10%'
 }
 
 const table = {

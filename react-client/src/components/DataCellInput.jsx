@@ -85,8 +85,9 @@ const input = {
   fontFamily: 'Montserrat',
   fontSize: '20px',
   width: '100%',
-  margin: 'auto auto'
+  margin: 'auto auto',
   // height: '70px'
+  borderBottom: '1px solid black',
 }
 
 const inputWithFocus = {

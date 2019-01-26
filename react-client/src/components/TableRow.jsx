@@ -42,17 +42,18 @@ class TableRow extends React.Component {
       {/* TODO: sort each array, turn into separate component */}
       {this.state.togglePreviousWorkouts ? 
         this.props.previousWorkouts.map((workout, i) =>  (
-          // <Transition in={inProp} timeout={duration}>
-            // {(state) => (
+          <Transition in={this.state.togglePreviousWorkouts} timeout={1000} appear key={'workout' + i}>
+            {(state) => (
 
             
-            <tr style={row
-              // {
-              //   ...defaultStyle,
-              //   ...transitionStyles[state]
-              // }
+            <tr style={
+              {
+                ...defaultStyle,
+                ...transitionStyles[state]
+              }
             } 
-                key={'workout' + i}>
+                >
+                {console.log('trans state', state)}
               <td>{new Date(workout.date).toDateString()}</td>
               {workout[this.props.exercise.name].sets.map((set, i) => (
                 <React.Fragment key={'setRest' + i}>
@@ -61,8 +62,8 @@ class TableRow extends React.Component {
                 </React.Fragment>
               ))} 
             </tr>
-          // )}
-          // </Transition>
+          )}
+          </Transition>
         )) : null}
      
       </React.Fragment>
@@ -84,15 +85,16 @@ const row = {
   borderBottom: '1px solid black'
 }
 
-// const duration = 300;
+const duration = 300;
 
-// const defaultStyle = {
-//   transition: `opacity ${duration}ms ease-in-out`,
-//   opacity: 0,
-//   borderBottom: '1px solid black'
-// }
+const defaultStyle = {
+  transition: `maxHeight 300ms ease-in-out`,
+  borderBottom: '1px solid black',
+  display:'none',
+  maxHeight:'0px'
+}
 
-// const transitionStyles = {
-//   entering: { opacity: 0 },
-//   entered:  { opacity: 1 },
-// };
+const transitionStyles = {
+  entering: { display:'', maxHeight:'0px'},
+  entered:  { display:'', maxHeight:'21px'},
+};
