@@ -8,17 +8,22 @@ import NavigationBar from './components/NavigationBar.jsx'
 import Home from './components/Home.jsx'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import NewWorkOutContainer from './components/NewWorkOutContainer.jsx';
+import Charts from './components/Charts.jsx';
 
 
 const App = () => (
   <div>
     <NavigationBar />
+
     <Router>
       <div style={mainWrapper}>
-        <Link to='/newWorkout'>menu</Link>
+        <div><Link to='/newWorkout'>Create New Workout</Link></div>
+        <div><Link to='/charts'>Progress Charts</Link></div>
+
         <Route path='/' component={Home} />
         <Route path='/newWorkout' render={ (props)=> (
           <NewWorkOutContainer {...props} />)}/>
+        <Route path='/charts' component={Charts}/>
       </div>
     </Router>
   </div>

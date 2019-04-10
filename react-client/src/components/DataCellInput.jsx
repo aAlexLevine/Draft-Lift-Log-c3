@@ -1,57 +1,35 @@
 import React from 'react';
-import axios from 'axios';
 
 class DataCellInput extends React.Component { 
   constructor(props){
     super(props);
     this.state = {
       weight: '',
-      defaultReps:'',
-      reps: '',
-      toggleRepsEdit: false
-      
+      reps: ''
     }
     this.handleWeightChange = this.handleWeightChange.bind(this)
     this.handleRepsChange = this.handleRepsChange.bind(this)
-    // this.editReps = this.editReps.bind(this)
   }
 
-  // componentDidMount () {
-  //   this.setState({reps: this.props.exercise.numOfReps})
-  // }
-
   handleWeightChange(e) {
+    let reps
+    this.state.reps === '' ? reps = this.props.defaultReps : reps = this.state.reps
     this.setState({
-      weight: e.target.value,
-      reps: this.props.exercise.numOfReps
+      weight: e.target.value
     }, () => {
-  
-      this.props.updateWeightPropertyForDataCell(this.props.exercise.name, this.props.setNum, this.state.weight, this.state.reps)
-
+      this.props.updateWeightPropertyForDataCell(this.props.exercise.name, this.props.setNum, this.state.weight, reps)
     })
-    // if (e.target.value) {
-
-    // }updateWeightPropertyForDataCell
-    // this.props.updateWeightPropertyForDataCell(this.props.exercise.name, this.props.setNum, e.target.value, this.state.reps)
   }
 
   handleRepsChange (e) {
     this.setState({reps: e.target.value})
-    // console.log(this.state.reps)
     this.props.updateRepsPropertyForDataCell(this.props.exercise.name, this.props.setNum, e.target.value)
   }
-  
-  // editReps() {
-  //   this.setState({toggleRepsEdit: !this.state.toggleRepsEdit})
-  // }
 
   render() {
-  
     return (
       <td style={cell}>
-      
-      <input style={input} type="text" defaultValue={this.props.exercise.numOfReps} onChange={this.handleRepsChange}/> 
-  
+        <input style={input} type="text" defaultValue={this.props.defaultReps} onChange={this.handleRepsChange}/> 
         <div style={x}>x</div>
         <input style={input} type="text" value={this.state.weight} onChange={this.handleWeightChange}/>
       </td>

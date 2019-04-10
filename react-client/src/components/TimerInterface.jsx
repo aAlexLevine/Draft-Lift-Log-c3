@@ -5,7 +5,7 @@ class TimerInterFace extends React.Component {
     super(props);
     this.state = {
       toggleEdit: false,
-      bottomCSS: -69
+      // bottomCSS: -69
     }
    this.setWrapperRef = this.setWrapperRef.bind(this) 
    this.onOutsideThisComponentClick = this.onOutsideThisComponentClick.bind(this)
@@ -27,27 +27,18 @@ class TimerInterFace extends React.Component {
   }
 
   onOutsideThisComponentClick(event) {
-    
-    
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
       event.stopPropagation()
       this.props.updateBottomCSS(event, true)
       this.props.toggleInterface(event)      
-      console.log('on-out fired')
     }
-    // this.setState({bottomCSS: -69}) 
   }
 
   toggleEdit(event) {
-    // let bottomCSS
-    // this.state.bottomCSS === -69 ? bottomCSS = -151 : bottomCSS = -69
-    // console.log('bottomCSS', bottomCSS)
     event.stopPropagation()
     this.props.updateBottomCSS(event)
-
     this.setState({toggleEdit: !this.state.toggleEdit})
   }
-
 
   render() {
 
@@ -78,10 +69,9 @@ class TimerInterFace extends React.Component {
               <div style={letter}>s:</div>
               <input style={input} type="number"/>
             </div>
+            <div style={button} >Save</div>
           </div>  
-          
           : null}
-        
       </div>
     )
   }

@@ -60,7 +60,7 @@ const getPlans = (userID) => {
 
 const getGroups = planID => {
   return new Promise((resolve, reject) => {
-    connection.query(`SELECT * FROM groups WHERE plan_id =${planID};`, (err, results, fields) => {
+    connection.query(`SELECT * FROM groups WHERE plan_id=${planID};`, (err, results, fields) => {
       if (err) {
         reject(err)
       } else {
@@ -133,6 +133,24 @@ const getSetsRestByLogid = (logID) => {
   })
 }
 
+const getAllWorkoutLogsByGroup = (userID, planID, group) => {
+  return new Promise((resolve, reject) => {
+    connection.query(`
+      SELECT *
+      FROM logs
+      WHERE user_id=${userID} AND plan_id=${planID} AND plan_group='${group}' AND 
+      exists (select id from sets_rest where logs_id=logs.id)
+      ORDER BY dateCreated`, 
+      (err, results) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results)
+        }
+    })
+  })
+}
+
 
 module.exports = {
   selectAll,
@@ -142,5 +160,6 @@ module.exports = {
   getExercisesByGroup,
   insertSets,
   getLastThreeLogIds,
-  getSetsRestByLogid
+  getSetsRestByLogid,
+  getAllWorkoutLogsByGroup
 };

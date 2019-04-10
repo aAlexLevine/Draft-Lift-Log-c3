@@ -67,8 +67,15 @@ app.get('/getLastThreeLogIds', (req, res) => {
 app.get('/getSetsRestByLogid', (req, res) => {
   console.log('server log id', req.query.logID)
   db.getSetsRestByLogid(req.query.logID)
-  .then(response => res.send(response))
-  .catch(err => console.log(err))
+    .then(response => res.send(response))
+    .catch(err => console.log(err))
+})
+
+app.get('/getAllWorkoutLogsByGroup', (req, res) => {
+  const {userID, planID, group} = req.query
+  db.getAllWorkoutLogsByGroup(userID, planID, group)
+    .then(response => res.send(response))
+    .catch(err => console.log(err))
 })
 
 

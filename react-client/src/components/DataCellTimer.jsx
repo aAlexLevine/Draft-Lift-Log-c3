@@ -61,6 +61,7 @@ class DataCellTimer extends React.Component {
       savedTime: this.state.elapsedTime,
       clockColor: 'black'
     })
+    this.props.updateRestTime(this.props.exercise.name, this.props.setNum, this.state.elapsedTime)
     clearInterval(this.timerInterval)
   }
   resetTimer() {
@@ -77,14 +78,13 @@ class DataCellTimer extends React.Component {
   toggleInterface(event, fromEllipsisClick=null) {
     event.stopPropagation()
     this.setState({toggleInterface: !this.state.toggleInterface, bottomCSS: -69})
-    // fromEllipsisClick ? : bottomCSS = -
   }
 
   updateBottomCSS(event, outsideclick=null) {
     event.stopPropagation()
     console.log('update fired')
     let bottomCSS
-    this.state.bottomCSS === -69 && !outsideclick ? bottomCSS = -151 : bottomCSS = -69
+    this.state.bottomCSS === -69 && !outsideclick ? bottomCSS = -165 : bottomCSS = -69
     this.setState({bottomCSS: bottomCSS})
   }
 
@@ -172,7 +172,10 @@ const display ={
 const timerCell = {              
   padding: '8px',
   whiteSpace: 'nowrap',
+  // backgroundColor: '#f4f6f7'
+  // borderRight: '1px solid black',
   // overflow: 'hidden'
+  // borderLeft: '1px solid black'
 }
 
 const clockContainer = {

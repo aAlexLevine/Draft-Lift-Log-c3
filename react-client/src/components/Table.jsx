@@ -2,6 +2,7 @@ import React from 'react';
 import TableRow from './TableRow.jsx';
 import Headers from './Headers.jsx';
 import axios from 'axios';
+import update from 'immutability-helper';
 
 class Table extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class Table extends React.Component {
       this.submitSets = this.submitSets.bind(this)
       this.getDate = this.getDate.bind(this)
       this.updateRepsPropertyForDataCell = this.updateRepsPropertyForDataCell.bind(this)
+      this.updateRestTimePropertyForDataCell = this.updateRestTimePropertyForDataCell.bind(this)
       this.getLastThreeLogIds = this.getLastThreeLogIds.bind(this)
       this.organizeSetsRestData = this.organizeSetsRestData.bind(this)
     }
@@ -104,22 +106,30 @@ class Table extends React.Component {
 
   updateWeightPropertyForDataCell(exercise, setNum, weight, reps) {
     if (weight === '') { reps = null } 
-    const copy = Object.assign({}, this.state.dataCellInputs)
-    copy[exercise]['set' + setNum].weight = weight
-    copy[exercise]['set' + setNum].reps = reps     
-    this.setState({dataCellInputs: copy})
-    //add func for rest times
-    console.log('dataCellInputs', this.state.dataCellInputs)
+    let copyDataCells = update(this.state.dataCellInputs, {
+      [exercise]: {['set' + setNum]: {weight: {$set: weight}}},
+    })
+    this.setState({dataCellInputs: copyDataCells}, () => {
+    this.updateRepsPropertyForDataCell(exercise, setNum, reps)
+      console.log('weight changed', this.state.dataCellInputs)
+    })
   }
 
   updateRepsPropertyForDataCell(exercise, setNum, reps) {
-    const copy = Object.assign({}, this.state.dataCellInputs)
-    copy[exercise]['set' + setNum].reps = reps
-    console.log('reps changed',this.state.dataCellInputs)
+    const copyDataCells = update(this.state.dataCellInputs, {
+      [exercise]: {['set' + setNum]: {reps: {$set: reps}}}
+    })
+    this.setState({dataCellInputs: copyDataCells}, () => 
+      console.log('reps changed', this.state.dataCellInputs))
   }
 
-  updateRestTimePropertyForDataCell(exercise, setNum, time) {
-
+  updateRestTimePropertyForDataCell(exercise, setNum, time) {  
+    console.log('time', time)
+    const copyDataCells = update(this.state.dataCellInputs, {
+      [exercise]: {['set' + setNum]: {rest: {$set: time}}}
+    })
+      this.setState({dataCellInputs: copyDataCells}, () => 
+      console.log('rest changed', this.state.dataCellInputs))
   }
 
   submitSets() {
@@ -174,9 +184,11 @@ class Table extends React.Component {
             {this.state.exercises.map((exercise, i) => (
               <TableRow key={i} 
                         exercise={exercise} 
+                        defaultReps={exercise.numOfReps}
                         setCount={this.state.setCount}  
                         updateWeightPropertyForDataCell={this.updateWeightPropertyForDataCell}
                         updateRepsPropertyForDataCell={this.updateRepsPropertyForDataCell}
+                        updateRestTimePropertyForDataCell={this.updateRestTimePropertyForDataCell}
                         previousWorkouts={this.state.previousWorkouts}
                         />))}
           </tbody>

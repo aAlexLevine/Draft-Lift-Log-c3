@@ -30,11 +30,17 @@ class TableRow extends React.Component {
           {[... new Array(this.props.setCount)].map((header, i) => (
             <React.Fragment key={'frag' + i}>
               <DataCellInput setNum={i + 1} 
-                            exercise={this.props.exercise} 
+                            exercise={this.props.exercise}
+                            defaultReps={this.props.defaultReps} 
                             updateWeightPropertyForDataCell={this.props.updateWeightPropertyForDataCell} 
                             updateRepsPropertyForDataCell={this.props.updateRepsPropertyForDataCell}
                             />
-              {i + 1 < this.props.setCount ? <DataCellTimer /> : null}  
+              {i + 1 < this.props.setCount ? 
+                <DataCellTimer setNum={i + 1}
+                              updateRestTime={this.props.updateRestTimePropertyForDataCell} 
+                              exercise={this.props.exercise}
+                              /> 
+                              : null}  
             </React.Fragment>
           ))}
         </tr>
@@ -57,7 +63,7 @@ class TableRow extends React.Component {
               <td>{new Date(workout.date).toDateString()}</td>
               {workout[this.props.exercise.name].sets.map((set, i) => (
                 <React.Fragment key={'setRest' + i}>
-                <td>{set.reps}x{set.weight}</td>
+                <td>{set.reps} x {set.weight}</td>
                 <td>{set.rest}</td>
                 </React.Fragment>
               ))} 
@@ -91,7 +97,8 @@ const defaultStyle = {
   transition: `maxHeight 300ms ease-in-out`,
   borderBottom: '1px solid black',
   display:'none',
-  maxHeight:'0px'
+  maxHeight:'0px',
+  textAlign: 'center'
 }
 
 const transitionStyles = {
